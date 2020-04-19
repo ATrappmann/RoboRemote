@@ -2,7 +2,7 @@
 
 Arduino project for a Bluetooth based remote control.
 
-![RoboRemote](./docs/RoboRemote.jpg)
+![RoboRemote](./docs/RoboRemote.png)
 
 Tutorial is shown on YouTube:
   part 1 - preparing the hardware: https://www.youtube.com/watch?v=xHsCnpfgwEI for Part 1
