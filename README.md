@@ -16,6 +16,12 @@ All text above must be included in any redistribution
 
 Release Notes:
 
+Version 1.1 - 19.04.2020
+
+  * Added Sketch "RoboRemote_HC05_Terminal" for HC05 Bluetooth module setup.
+  * Added Sketch "RoboRemote-Controller" for RoboRemote Bluetooth Controller.
+  * Added Sketch "RoboRemote-Receiver" as a demo receiver for the RoboRemote Bluetooth Controller.
+
 Version 1.0 - 19.04.2020
 
-  * Published Sketch for basicHardware test.
+  * Published Sketch "RoboRemote_HW_Test" for basic Hardware testing.

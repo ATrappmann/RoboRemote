@@ -38,19 +38,20 @@
  * Configuration
  */
 // Check, which chip is used on the I2C expander module for the LCD.
+// If the PCF8574 chip is used, comment out the following line.
 // If the MCP23017 chip is used, uncomment the following line and use my library.
 //#define USE_MCP23017_LCD
 
 /*
  * Implementation
  */
-#ifndef USE_MCP23017_LCD
+#ifndef USE_MCP23017_LCD // use this library for PCF8574 chip
 // I2C LiquidCrystal library from https://github.com/fdebrabander/Arduino-LiquidCrystal-I2C-library
 // Default is I2C-address 0x27.
 #include <LiquidCrystal_I2C.h>
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
-#else // use library for MCP23017 chip
+#else // use this library for MCP23017 chip
 // I2C LiquidCrystal libray from https://github.com/ATrappmann/LiquidCrystal_MCP23017_I2C
 #include "LiquidCrystal_MCP23017_I2C.h"
 #define LCD_RS_PIN  MCP23017_PA7
@@ -77,7 +78,7 @@ void setup() {
    * Define I/O mode of digital pins D0-D13
    */
   // skip pins 0&1 for HardwareSerial
-  
+
   // pins 2-9 are for digital inputs
   for (int pin=2; pin<=9; pin++) {
     pinMode(pin, INPUT_PULLUP);
@@ -96,23 +97,23 @@ void setup() {
   pinMode(A2, INPUT);
   // pin A3 is for digital input of joystick
   pinMode(A3, INPUT_PULLUP);
-  
+
   // skip pins A4&A5 for I2C communication
-  
+
   // pin A0 is for HC-05 bluetooth pin 34
   pinMode(A0, OUTPUT);
   digitalWrite(A0, HIGH);
-  
+
   // pin A7 is for analog input of potentiometer
   pinMode(A7, INPUT);
 
-  /* 
-   * Start serial communication 
+  /*
+   * Start serial communication
    */
   Serial.begin(115200);
   while (!Serial);
   Serial.println(F("RoboRemote HW-Test running..."));
-  
+
   /*
    * Initialize LCD
    */
@@ -135,22 +136,22 @@ void loop() {
     for (int pin=10; pin<=13; pin++) {
       digitalWrite(pin, !digitalRead(pin));
     }
-  
+
     // show Joystick potentiometer values and joystick button state
     Serial.print( analogRead(A6)); Serial.print(" ");
     Serial.print( analogRead(A1)); Serial.print(" ");
     Serial.print( analogRead(A2)); Serial.print(" ");
     Serial.print(digitalRead(A3)); Serial.print(" ");
-  
+
     // show Bluetooth pin 34 state
     Serial.print(digitalRead(A0)); Serial.print(" ");
-  
+
     // show additional potentiometer value
     Serial.print( analogRead(A7)); Serial.print(" ");
     Serial.println();
 
     // show seconds after startup on LCD
     lcd.setCursor(0, 1);
-    lcd.print(millis() / 1000);  
+    lcd.print(millis() / 1000);
   }
 }
