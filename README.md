@@ -64,8 +64,8 @@ to configure 1 HC-05 module as a slave device and 1 HC-05 module as master.
 
 To configure a HC-05 module it must be connected to an Arduino temporary.
 ```
-**Be aware that the BT pins RX and EN/KEY or pin34 of the Bluetooth module 
-are not 5V tolerant and need a voltage divider between the BT module and the Arduino!**
+Be aware that the BT pins RX and EN/KEY or pin34 of the Bluetooth module
+are not 5V tolerant and need a voltage divider between the BT module and the Arduino!
 ```
 For each pin, where a voltage divider is needed,
 a 1K resistor is connected between the Arduino pin and the BT pin and another
@@ -86,10 +86,18 @@ The wiring is shown in the following schematic picture:
 
 ![HC-05](./docs/HC-05.png)
 
+The BT STATE pin may be connected with an additional 10K pull-down resistor
+to GND. This will give the Arduino a stable input signal but it is not required
+for the following configuration tasks.
+
 Now both HC-05 modules can be configured using the Sketch **RoboRemote_HC05_Terminal**.
-1 in slave mode, the other in master mode. The **HC05 slave module** is the
-receiver and will be placed in the robot which should be controlled. The
-**HC05 master module** is the transmitter and is part of the **RoboRemote**
+They will be given different tasks:
+1 HC-05 module will be configured in slave mode, the other in master mode.
+
+The **HC05 slave module** is the
+receiver from **RoboRemote** and will be placed in the robot which should be controlled.
+
+The **HC05 master module** is the transmitter and is part of the **RoboRemote**
 Bluetooth based remote controller.
 
 The **HC05 slave module** for the controlled robot is configured as follows:
@@ -118,11 +126,11 @@ pair with its slave device with the command `AT+INIT`.
 ### RoboRemote-Controller
 **RoboRemote-Controller** is the final Sketch for the **RoboRemote** Bluetooth
 based remote controller. When powered on, it connects to the pre-configured
-**HC-05 slave module** and display the connection state by powering on the
+**HC-05 slave module** and displays the connection state by powering on the
 blue LED.
 While connected, this Sketch will
 poll the state of all push button switches and read out all potentiometer
-values. All these informations are packed in a transfer packet and is transmitted
+values. All these informations are packed into a transfer packet and is transmitted
 to the **RoboRemote-Receiver**.
 
 In version 1, the LCD will only show the connection process and after that
@@ -131,7 +139,7 @@ the transmitted packet count.
 ### RoboRemote-Receiver
 **RoboRemote-Receiver** is a Sketch with the **HC05 slave module** to
 show that a connection with the **RoboRemote-Controller** is established.
-For demonstrating purpose, all data received from the **RoboRemote-Controller**
+For demonstrating purposes, all data received from the **RoboRemote-Controller**
 is printed to the Serial output.
 
 This Sketch can be used as a basis, of how to embedd the **HC05 slave module**
