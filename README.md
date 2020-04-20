@@ -67,23 +67,17 @@ the BT pins RX and EN/KEY or pin34 of the Bluetooth module are not 5V tolerant
 and need a voltage divider between the module and the Arduino!**
 BT pins TX and STATE can be connected directly to the Arduino.
 
-To reduce the 5V outputs of the Arduino to 3,3V for the Bluetooth module,
-a voltage divider can be implemented with 2 resistors:
-  BT pin ---.--- 1K --- Arduino pin
-            |
-        1K8 or 2K
-            |---------- Arduino GND
-
 Make the following connections between the HC-05 (BT) and an Arduino:
 
   * BT VCC to Arduino 5V
   * BT GND to Arduino GND
   * BT TX to Arduino pin 2 (no need for voltage divider)
-  * BT RX to Arduino pin 3 **through a voltage divider** to Arduino pin 3
-  * BT STATE to Arduino pin 4
+  * BT RX **through a voltage divider** to Arduino pin 3
+  * BT STATE to Arduino pin 4 (no need for voltage divider)
   * BT EN/KEY or pin34 **through a voltage divider** to Arduino pin 5
 
 The wiring is shown in the following schematic picture:
+
 ![HC-05](./docs/HC-05.png)
 
 Now both HC-05 modules can be configured using the Sketch **RoboRemote_HC05_Terminal**.
