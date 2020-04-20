@@ -62,9 +62,15 @@ to the Serial output. LEDs will be blinking and the LCD will show a welcome mess
 HC-05 Bluetooth modules. This sketch can be used independently of **RoboRemote**
 to configure 1 HC-05 module as a slave device and 1 HC-05 module as master.
 
-To configure a HC-05 module it must be connected to an Arduino. **Be aware that
-the BT pins RX and EN/KEY or pin34 of the Bluetooth module are not 5V tolerant
-and need a voltage divider between the module and the Arduino!**
+To configure a HC-05 module it must be connected to an Arduino temporary.
+```
+**Be aware that the BT pins RX and EN/KEY or pin34 of the Bluetooth module 
+are not 5V tolerant and need a voltage divider between the BT module and the Arduino!**
+```
+For each pin, where a voltage divider is needed,
+a 1K resistor is connected between the Arduino pin and the BT pin and another
+1K8 or 2K resistor is connected from the BT pin to GND.
+
 BT pins TX and STATE can be connected directly to the Arduino.
 
 Make the following connections between the HC-05 (BT) and an Arduino:
