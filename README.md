@@ -70,20 +70,42 @@ The **HC05 slave module** for the controlled robot is configured as follows:
 
 The **HC05 master module** for **RoboRemote** is configured as follows:
 1. set the master role for the HC-05 module: `AT+ROLE=1`
-2. configure the same communication speed as for the slave: ie. `AT+UART=38400,0,0`
-3. set the same PIN as for the slave: ie. `AT+PSWD=1234`
-4. set connection mode for authorized devices only `AT+CMODE=0`
-4. set inquire access mode, max 5 devices in 9s `AT+INQM=0,5,9`
-5. initialize SPP `AT+INIT`
-6. get list of devices in range `AT+INQ`
-7. ask for name or specified device `AT+RNAME?xxxx,yy,zzzzzz`
-8. pair with specified device `AT+PAIR=xxxx,yy,zzzzzz,9`
-9. set BT address `AT+BIND=xxxx,yy,zzzzzz`
-10. connect with device `AT+LINK=xxxx,yy,zzzzzz`
+1. configure the same communication speed as for the slave: ie. `AT+UART=38400,0,0`
+1. set the same PIN as for the slave: ie. `AT+PSWD=1234`
+1. set connection mode for authorized devices only `AT+CMODE=0`
+1. set inquire access mode, max 5 devices in 9s `AT+INQM=0,5,9`
+1. initialize SPP `AT+INIT`
+1. get list of devices in range `AT+INQ`
+1. ask for name or specified device `AT+RNAME?xxxx,yy,zzzzzz`
+1. pair with specified device `AT+PAIR=xxxx,yy,zzzzzz,9`
+1. set BT address `AT+BIND=xxxx,yy,zzzzzz`
+1. connect with device `AT+LINK=xxxx,yy,zzzzzz`
 
 After this setup, devices will connect automatically when powered on if they
 are not in AT command mode. If AT command mode was selected, the master can
 pair with its slave device with the command `AT+INIT`.
+
+### RoboRemote-Controller
+**RoboRemote-Controller** is the final Sketch for the **RoboRemote** Bluetooth
+based remote controller. When powered on, it connects to the pre-configured
+**HC-05 slave module** and display the connection state by powering on the
+blue LED.
+While connected, this Sketch will
+poll the state of all push button switches and read out all potentiometer
+values. All these informations are packed in a transfer packet and is transmitted
+to the **RoboRemote-Receiver**.
+
+In version 1, the LCD will only show the connection process and after that
+the transmitted packet count.
+
+### RoboRemote-Receiver
+**RoboRemote-Receiver** is a Sketch with the **HC05 slave module** to
+show that a connection with the **RoboRemote-Controller** is established.
+For demonstrating purpose, all data received from the **RoboRemote-Controller**
+is printed to the Serial output.
+
+This Sketch can be used as a basis, of how to embedd the **HC05 slave module**
+into your own robotic projects.
 
 ## Copyright
 **RoboRemote** is written by Andreas Trappmann from

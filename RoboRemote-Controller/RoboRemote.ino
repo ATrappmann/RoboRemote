@@ -1,5 +1,5 @@
 // NAME: RoboRemote.ino
-// 
+//
 // DESC: Sketch for RoboRemote bluetooth remote controller.
 //       see https://www.youtube.com/watch?v=xHsCnpfgwEI for Part 1
 //       and https://www.youtube.com/watch?v=I3VOlUwofhE for Part 2
@@ -76,7 +76,7 @@ void setup() {
   pinMode(LEFT_BTN_PIN, INPUT_PULLUP);
   pinMode(RED_BTN_PIN, INPUT_PULLUP);
   pinMode(GREEN_BTN_PIN, INPUT_PULLUP);
-  
+
   pinMode(BLUE_LED_PIN, OUTPUT);
   pinMode(RED_LED_PIN, OUTPUT);
   pinMode(GREEN_LED_PIN, OUTPUT);
@@ -89,18 +89,18 @@ void setup() {
   pinMode(JSK_PITCH_PIN, INPUT);
   pinMode(JSK_YAW_PIN, INPUT);
   pinMode(JSK_BTN_PIN, INPUT_PULLUP);
-  
+
   pinMode(POT_PIN, INPUT);
 
   digitalWrite(BT_CMD_PIN, HIGH); // was HIGH during reset anyway
   digitalWrite(BLUE_LED_PIN, LOW);
-    
+
   // init LCD
   lcd.begin(16, 2);
   lcd.print(F("RoboRemote ")); lcd.print(MAJOR); lcd.print('.'); lcd.print(MINOR);
   lcd.setCursor(0, 1);
   lcd.print(F("Pairing..."));
-  
+
   // start communication with the HC-05
   BTserial.begin(BTspeed);
   int status = BTconnect();
@@ -117,18 +117,19 @@ void setup() {
   delay(1000);
   lcd.setCursor(0, 1);
   lcd.print(F("       "));
-  
+
   ET.begin(details(txData), &BTserial);
   txData.major = MAJOR;
   txData.minor = MINOR;
   txData.packetNo = 0L;
 }
 
-void loop() { 
-  if (digitalRead(BT_STATE_PIN)) {
-    digitalWrite(BLUE_LED_PIN, HIGH);  // paired
+void loop() {
+  if (!digitalRead(BT_STATE_PIN)) { // not paired
+    digitalWrite(BLUE_LED_PIN, LOW);  // switch of blue LED
+    while (!digitalRead(BT_STATE_PIN)); // wait for pairing
   }
-  else digitalWrite(BLUE_LED_PIN, LOW);  // not paired
+  else digitalWrite(BLUE_LED_PIN, HIGH);  // paired
 
   txData.packetNo++;
   txData.buttons = 0;
