@@ -1,14 +1,14 @@
 // Basic Bluetooth sketch HC-05
 // Connect the HC-05 module and communicate using the serial monitor
 //
-// The HC-05 defaults to communication mode when powered on. Needs to be placed into 
-// AT mode by either pressing the micro switch or setting pin34 to 3,3V while powering 
+// The HC-05 defaults to communication mode when powered on. Needs to be placed into
+// AT mode by either pressing the micro switch or setting pin34 to 3,3V while powering
 // on the device.
 // In AT mode, all commands must be transmitted with CR and LF.
 // After a factory reset the default baud rate for communication mode is 38400.
 //
 // Pins:
-//  BT VCC to Arduino 5V out. 
+//  BT VCC to Arduino 5V out.
 //  BT GND to GND
 //  BT STATE to Arduino pin 4 (10K pull-down resistor to GND)
 //  BT RX to Arduino pin 3 (through a voltage divider)
@@ -23,7 +23,7 @@
 //  AT+ROLE?    ->  +ROLE:0 (slave) of +ROLE:1 (master)
 //  AT+CMODE?   ->  +CMOD:0 (connect only to known devices) of +CMOD:1 (connect to any device)
 //  AT+NAME?    ->  +NAME:HC-05 (or some custom name)
-//  AT+PSWD?    ->  +PSWD:xxxx (version 2) or +PIN:"xxxx" (version 3)
+//  AT+PSWD?    ->  +PSWD:xxxx (version 2) or +PSWD:"xxxx" (version 3)
 //  AT+ADDR?    ->  +ADDR:xxxx:yy:zzzzzz (our BT address)
 //  AT+ADCN?    ->  +ADCN:x (get authenticated device count)
 //
@@ -36,7 +36,7 @@
 //  AT+UART=38400,0,0   ->  OK (set communication speed)
 //  AT+NAME=RoboRemote  ->  OK (set our name)
 //  AT+PSWD=xxxx        ->  OK (define the PIN, if ERROR:(1D), try AT+PSWD="xxxx")
-//  
+//
 // Configuration as Master:
 //  AT+ROLE=1                 ->  OK (master)
 //  AT+RESET                  ->  OK (only after ROLE change)
@@ -74,7 +74,7 @@ String sendCommand(const char *cmd) {
   do {
     len = BTserial.available();
     if (len > 0) {
-      SEROUT(F("available=") << len << LF);    
+      SEROUT(F("available=") << len << LF);
       for (int i=0; i<len; i++) {
         c = BTserial.read();
         if ('\r' != c) {
@@ -117,20 +117,20 @@ void setup() {
 
   digitalWrite(CMD_PIN, HIGH); // was HIGH during reset anyway
   digitalWrite(LED_PIN, LOW);
-  
+
   // start the serial communication with the host computer
   Serial.begin(38400);
   while (!Serial);
   Serial.println(F("Arduino with HC-05 terminal is ready"));
-  
+
   // start communication with the HC-05 using 38400
-  BTserial.begin(38400);  
+  BTserial.begin(38400);
   Serial.println(F("BTserial started at 38400"));
   Serial.println(F("HC-05 LED blinking modes:"));
   Serial.println(F("blink with 0,5Hz: full AT command mode (EN or pin34 is HIGH)"));
-  Serial.println(F("blink with 5Hz  : communication mode, not paired")); 
+  Serial.println(F("blink with 5Hz  : communication mode, not paired"));
   Serial.println(F("blink with 1Hz  : communication mode, connecting"));
-  Serial.println(F("twice every 2-3s: communication mode, paired")); 
+  Serial.println(F("twice every 2-3s: communication mode, paired"));
 
   // check for command mode
   String response = sendCommand("AT");
@@ -141,18 +141,18 @@ void setup() {
     Serial.flush();
     exit(-1);
   }
-  
+
   Serial.println("Ready.");
 }
 
 bool NL = true;
-void loop() { 
+void loop() {
   // Keep reading from HC-05 and send to Arduino Serial Monitor
-  while (BTserial.available()) {  
+  while (BTserial.available()) {
     char c = BTserial.read();
     Serial.write(c);
   }
-  
+
   // Keep reading from Arduino Serial Monitor and send to HC-05
   while (Serial.available()) {
     char c =  Serial.read();
@@ -160,8 +160,8 @@ void loop() {
 
     // Echo the user input to the main window. The ">" character indicates the user entered text.
     if (NL) {
-      Serial.print(">");  
-      NL = false; 
+      Serial.print(">");
+      NL = false;
     }
     Serial.write(c);
     if (c==10) NL = true;
