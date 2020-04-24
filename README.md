@@ -14,6 +14,8 @@ A Tutorial for building **RoboRemote** is shown on YouTube:
 
   part 2 - schematic and wiring  : https://www.youtube.com/watch?v=I3VOlUwofhE
 
+  part 3 - programming and test  : https://www.youtube.com/watch?v=15aVeGGLiDI
+  
 ## Schematic
 Here is the schematic of **RoboRemote**. It is explained in the videos
 mentioned in the tutorial.

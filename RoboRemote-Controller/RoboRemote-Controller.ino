@@ -3,7 +3,7 @@
 // DESC: Sketch for RoboRemote bluetooth remote controller.
 //       see https://www.youtube.com/watch?v=xHsCnpfgwEI for Part 1
 //       and https://www.youtube.com/watch?v=I3VOlUwofhE for Part 2
-//       and XXX for Part 3
+//       and https://www.youtube.com/watch?v=15aVeGGLiDI for Part 3
 //
 // SOURCE: Code is available at https://github.com/ATrappmann/RoboRemote/Controller
 //
