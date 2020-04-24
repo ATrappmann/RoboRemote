@@ -5,7 +5,7 @@ to control self build robots.
 For communication, 2 HC-05 Bluetooth modules are required.
 The Sketch is running on an Arduino Pro Mini with an ATmega328(5V, 16MHz).
 
-![RoboRemote](./docs/RoboRemote2.png)
+![RoboRemote](./docs/RoboRemote1.png)
 
 ## Tutorial
 A Tutorial for building **RoboRemote** is shown on YouTube:
