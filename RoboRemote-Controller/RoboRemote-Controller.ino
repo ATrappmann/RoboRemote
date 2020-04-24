@@ -1,4 +1,4 @@
-// NAME: RoboRemote.ino
+// NAME: RoboRemote-Controller.ino
 //
 // DESC: Sketch for RoboRemote bluetooth remote controller.
 //       see https://www.youtube.com/watch?v=xHsCnpfgwEI for Part 1
