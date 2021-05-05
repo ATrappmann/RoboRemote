@@ -1,11 +1,11 @@
-// NAME: RoboRemote-Controller.ino
+// NAME: RoboRemote-Controller_v2.ino
 //
 // DESC: Sketch for RoboRemote bluetooth remote controller.
 //       see https://www.youtube.com/watch?v=xHsCnpfgwEI for Part 1
 //       and https://www.youtube.com/watch?v=I3VOlUwofhE for Part 2
 //       and https://www.youtube.com/watch?v=15aVeGGLiDI for Part 3
 //
-// SOURCE: Code is available at https://github.com/ATrappmann/RoboRemote/Controller
+// SOURCE: Code is available at https://github.com/ATrappmann/RoboRemote
 //
 // USES LIBRARIES:
 //  I2C Liquid Crystal from https://github.com/fdebrabander/Arduino-LiquidCrystal-I2C-library
@@ -13,10 +13,11 @@
 //  I2C LiquidCrystal from https://github.com/ATrappmann/LiquidCrystal_MCP23017_I2C
 // and
 //  EasyTransfer from https://github.com/madsci1016/Arduino-EasyTransfer
+//  LCDMenuController from https://github.com/ATrappmann/LCDMenuController
 //
 // MIT License
 //
-// Copyright (c) 2020 Andreas Trappmann
+// Copyright (c) 2020-21 Andreas Trappmann
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -37,14 +38,22 @@
 // SOFTWARE.
 //
 
-#define MAJOR 1
+#define MAJOR 2
 #define MINOR 0
 
+#define CONCAT2(a,b)      a##b
+#define CONCAT3(a,b,c)    a##b##c
+#define CONCAT4(a,b,c,d)  a##b##c##d
+
+#define STRING(s)  #s
+
 #include <EasyTransfer.h>
+#include <LCDMenuController.h>
 
 #include "RoboRemote_Pins.h"
-#include "Bluetooth.h"
 #include "LCD.h"
+#include "Menus.h"
+#include "Bluetooth.h"
 
 EasyTransfer ET;
 
@@ -58,8 +67,7 @@ EasyTransfer ET;
 #define JSK_BTN_MASK    (1<<7)
 
 struct SEND_DATA {
-  uint8_t   major;
-  uint8_t   minor;
+  uint8_t   version;
   uint32_t  packetNo;
   uint8_t   buttons;
   uint16_t  jsk_roll;
@@ -67,6 +75,8 @@ struct SEND_DATA {
   uint16_t  jsk_yaw;
   uint16_t  pot;
 } txData;
+
+LCDMenuController menu = LCDMenuController(&lcd, 16, 2, DOWN_BTN_PIN, UP_BTN_PIN, ENTER_BTN_PIN, RED_BTN_PIN);
 
 void setup() {
   pinMode(RIGHT_BTN_PIN, INPUT_PULLUP);
@@ -95,41 +105,21 @@ void setup() {
   digitalWrite(BT_CMD_PIN, HIGH); // was HIGH during reset anyway
   digitalWrite(BLUE_LED_PIN, LOW);
 
-  // init LCD
-  lcd.begin(16, 2);
-  lcd.print(F("RoboRemote ")); lcd.print(MAJOR); lcd.print('.'); lcd.print(MINOR);
-  lcd.setCursor(0, 1);
-  lcd.print(F("Pairing..."));
-
-  /*
-  // start communication with the HC-05
-  BTserial.begin(BTspeed);
-  int status = BTconnect();
-  if (status < 0) {
-    digitalWrite(RED_LED_PIN, HIGH);
-    lcd.setCursor(0, 1);
-    lcd.print(F("ERROR: #")); lcd.print(status);
-    exit(-1);
-  }
-  */
-  while (!digitalRead(BT_STATE_PIN)); // wait for connection
-
-  digitalWrite(BLUE_LED_PIN, HIGH);
-  lcd.setCursor(0, 1);
-  lcd.print(F("Paired!         "));
-  delay(1000);
-  lcd.setCursor(0, 1);
-  lcd.print(F("       "));
-
   ET.begin(details(txData), &BTserial);
-  txData.major = MAJOR;
-  txData.minor = MINOR;
+  txData.version = MAJOR;
   txData.packetNo = 0L;
+
+  menu.init();
+  menu.begin(mainMenu);
 }
 
 void loop() {
+  menu.navigate();
+}
+
+void *remoteControl() {
   if (!digitalRead(BT_STATE_PIN)) { // not paired
-    digitalWrite(BLUE_LED_PIN, LOW);  // switch of blue LED
+    digitalWrite(BLUE_LED_PIN, LOW);  // switch off blue LED
     while (!digitalRead(BT_STATE_PIN)); // wait for pairing
   }
   else digitalWrite(BLUE_LED_PIN, HIGH);  // paired
@@ -144,6 +134,7 @@ void loop() {
   if (digitalRead(RED_BTN_PIN))   txData.buttons |= RED_BTN_MASK;
   if (digitalRead(GREEN_BTN_PIN)) txData.buttons |= GREEN_BTN_MASK;
   if (digitalRead(JSK_BTN_PIN))   txData.buttons |= JSK_BTN_MASK;
+  txData.buttons = ~txData.buttons; // redo logic inversion through pullup resistors
   txData.jsk_roll = analogRead(JSK_ROLL_PIN);
   txData.jsk_pitch= analogRead(JSK_PITCH_PIN);
   txData.jsk_yaw  = analogRead(JSK_YAW_PIN);
@@ -152,4 +143,6 @@ void loop() {
 
   lcd.setCursor(0, 1);
   lcd.print(txData.packetNo);
+
+  return remoteControl;
 }

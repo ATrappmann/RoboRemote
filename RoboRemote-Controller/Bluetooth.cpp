@@ -5,6 +5,11 @@
 #include "LCD.h"
 #include "RoboRemote_Pins.h"
 
+/*
+ * sendCommand and wait for response of BT module
+ * For the command "AT+VERSION?" the response would be "+VERSION:2.0-<date>\nOK"
+ * @return response (without trailing LF)
+ */
 String sendCommand(const char *cmd) {
   BTserial.write(cmd); BTserial.write("\r\n");
 
@@ -32,6 +37,12 @@ String sendCommand(const char *cmd) {
   return response;
 }
 
+/*
+ * getStatus extracts the status information from the response of an
+ * BT command, eq. OK, FAIL or ERROR:(no)
+ * The status "OK" will be extracted from the response "+VERSION:2.0-<date>\nOK"
+ * @return status
+ */
 String getStatus(const String& response) {
   int idx = response.lastIndexOf('\n');
   if (-1 == idx) {  // only status in response
@@ -40,6 +51,13 @@ String getStatus(const String& response) {
   else return response.substring(idx+1);
 }
 
+/*
+ * getAnswer extracts the detailed answer information from the response
+ * of an BT command. It skips the following status information, like
+ * OK, FAIL or ERROR:(no)
+ * The answer "+VERSION:2.0-<date>" will be extracted from the response "+VERSION:2.0-<date>\nOK"
+ * @return answer
+ */
 String getAnswer(const String& response) {
   int idx = response.lastIndexOf('\n');
   if (-1 == idx) {  // only status in response
@@ -54,7 +72,7 @@ int BTconnect() {
   String status = getStatus(response);
   if (!status.equals("OK")) return -1;  // not in AT command mode
 
-  String remoteName;  
+  String remoteName;
   response = sendCommand("AT+ADCN?");
   String answer = getAnswer(response);
   if (answer.equals("+ADCN:0")) { // no authenticated devices
@@ -65,15 +83,15 @@ int BTconnect() {
     status = getStatus(response);
     if (!status.equals("OK")) return -2;
     delay(1000);
-    
+
     response = sendCommand("AT+CMODE=0");
     status = getStatus(response);
     if (!status.equals("OK")) return -3;
-  
+
     response = sendCommand("AT+INQM=0,5,9");
     status = getStatus(response);
     if (!status.equals("OK")) return -4;
-  
+
     response = sendCommand("AT+INIT");
     status = getStatus(response);
     if (!status.equals("OK")) return -5;
@@ -92,7 +110,7 @@ int BTconnect() {
       if (-1 == idx) return -7; // internal error
       String remoteAddr = deviceList.substring(0, idx);
       remoteAddr.replace(':', ',');
-      
+
       String cmd = "AT+RNAME?" + remoteAddr;
       response = sendCommand(cmd.c_str());
       status = getStatus(response);
@@ -111,7 +129,7 @@ int BTconnect() {
         response = sendCommand(cmd.c_str());
         status = getStatus(response);
         if (!status.equals("OK")) return -10;
-        
+
         cmd = "AT+LINK=" + remoteAddr;
         response = sendCommand(cmd.c_str());
         status = getStatus(response);
@@ -149,9 +167,9 @@ int BTconnect() {
 
     String answer = getAnswer(response);
     remoteName = answer.substring(7); // cut of prefix "+RNAME:", len=7
-*/    
+*/
   }
-   
+
   digitalWrite(BT_CMD_PIN, LOW);  // switch to communication mode
   while (!digitalRead(BT_STATE_PIN)); // wait for connection
   return 0;

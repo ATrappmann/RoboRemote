@@ -30,22 +30,25 @@
 // Reset to factory defaults:
 //  AT+ORGL     ->  OK
 //
-// Configuration as Slave:
+// Configuration as Slave (RoboRemote Receiver)
+//  AT+ORGL             ->  OK (restore factory settings, HC05: slave mode, 38400)
 //  AT+ROLE=0           ->  OK (slave)
 //  AT+RESET            ->  OK (only after ROLE change)
 //  AT+UART=38400,0,0   ->  OK (set communication speed)
 //  AT+NAME=RoboRemote  ->  OK (set our name)
 //  AT+PSWD=xxxx        ->  OK (define the PIN, if ERROR:(1D), try AT+PSWD="xxxx")
 //
-// Configuration as Master:
+// Configuration as Master (RoboRemote Transmitter)
+//  AT+ORGL                   ->  OK (restore factory settings, HC05: slave mode, 38400)
 //  AT+ROLE=1                 ->  OK (master)
 //  AT+RESET                  ->  OK (only after ROLE change)
 //  AT+UART=38400,0,0         ->  OK (set communication speed)
+//  AT+NAME=RoboController    ->  OK (set our name)
 //  AT+PSWD=xxxx              ->  OK (set PIN of slave, if ERROR:(1D), try AT+PSWD="xxxx" (version 3))
-//  AT+RMAAD                  ->  OK (delete all authenticated devices)
+//  --AT+RMAAD                  ->  OK (delete all authenticated devices)
 //  AT+CMODE=0                ->  OK (connect only to specified devices)
 //  AT+INQM=0,5,9             ->  OK (set inquire access mode, max 5 devices in 9s)
-//  AT+INIT                   ->  OK (initialize SPP)
+//  --AT+INIT                   ->  OK (initialize SPP)
 //  AT+INQ                    ->  +INQ:xxxx:yy:zzzzzz,aaaa,bbbb (get list of devices in range)
 //  AT+RNAME?xxxx,yy,zzzzzz   ->  +RNAME:RoboRemote (ask for name of specified device)
 //  AT+PAIR=xxxx,yy,zzzzzz,9  ->  OK (set pair with specified device, timeout in 9s)
@@ -83,7 +86,7 @@ String sendCommand(const char *cmd) {
         }
       }
     }
-    else delay(100);
+    else delay(20);
     len = response.length();
     if ((0 == len) && (++loops > 100)) return "";  // not in AT command mode?
   } while (BTserial.available() || (len < 3) || (c != '\n') ||
@@ -132,6 +135,7 @@ void setup() {
   Serial.println(F("blink with 1Hz  : communication mode, connecting"));
   Serial.println(F("twice every 2-3s: communication mode, paired"));
 
+/*
   // check for command mode
   String response = sendCommand("AT");
   String status = getStatus(response);
@@ -141,6 +145,7 @@ void setup() {
     Serial.flush();
     exit(-1);
   }
+*/
 
   Serial.println("Ready.");
 }
