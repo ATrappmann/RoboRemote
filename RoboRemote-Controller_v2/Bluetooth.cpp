@@ -20,7 +20,7 @@ String sendCommand(const char *cmd) {
         }
       }
     }
-    else delay(100);
+    else delay(20);
     len = response.length();
     if ((0 == len) && (++loops > 100)) return "";  // not in AT command mode?
   } while (BTserial.available() || (len < 3) || (c != '\n') ||
@@ -56,7 +56,8 @@ int slaveConfig(String& remoteAddr) {
   response = sendCommand("AT+ORGL");
   status = getStatus(response);
   if (!status.equals("OK")) return -2;  // error
-
+  delay(500);
+  
   // set slave mode
   response = sendCommand("AT+ROLE=0");
   status = getStatus(response);
@@ -66,7 +67,8 @@ int slaveConfig(String& remoteAddr) {
   response = sendCommand("AT+RESET");
   status = getStatus(response);
   if (!status.equals("OK")) return -4;  // error
-
+  delay(500);
+  
   // set name
   response = sendCommand("AT+NAME=RoboReceiver");
   status = getStatus(response);
@@ -105,21 +107,17 @@ int masterConfig(const String& remoteAddr) {
   response = sendCommand("AT+ORGL");
   status = getStatus(response);
   if (!status.equals("OK")) return -2;  // error
+  delay(500);
 
-  // set slave mode
-  response = sendCommand("AT+ROLE=1");
+  // connect only to known partners
+  response = sendCommand("AT+CMODE=0");
   status = getStatus(response);
   if (!status.equals("OK")) return -3;  // error
-
-  // reset after role change
-  response = sendCommand("AT+RESET");
-  status = getStatus(response);
-  if (!status.equals("OK")) return -4;  // error
-
+  
   // set name
   response = sendCommand("AT+NAME=RoboController");
   status = getStatus(response);
-  if (!status.equals("OK")) return -5;  // error
+  if (!status.equals("OK")) return -4;  // error
 
   // set password
   response = sendCommand("AT+PSWD=2206");
@@ -127,19 +125,28 @@ int masterConfig(const String& remoteAddr) {
   if (!status.equals("OK")) {
     response = sendCommand("AT+PSWD=\"2206\"");
     status = getStatus(response);
-    if (!status.equals("OK")) return -6;  // error
+    if (!status.equals("OK")) return -5;  // error
   }
-
-  // connect only to known partners
-  response = sendCommand("AT+CMODE=0");
-  status = getStatus(response);
-  if (!status.equals("OK")) return -7;  // error
 
   // set name
   String bind = "AT+BIND=" + remoteAddr;
   response = sendCommand(bind.c_str());
   status = getStatus(response);
-  if (!status.equals("OK")) return -8;  // error
+  if (!status.equals("OK")) return -6;  // error
+
+  // set slave mode
+  response = sendCommand("AT+ROLE=1");
+  status = getStatus(response);
+  if (!status.equals("OK")) return -7;  // error
+  
+  // reset after role change
+  int cnt = 0;
+  do {
+    response = sendCommand("AT+RESET");
+    status = getStatus(response);
+    if (status.equals("OK")) break;
+  } while (++cnt < 3);
+  if (cnt >= 3) return -8;  // error
 
   return 0; // done
 }

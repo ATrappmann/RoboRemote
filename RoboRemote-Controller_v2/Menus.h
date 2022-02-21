@@ -5,21 +5,19 @@
 
 #include <LCDMenuController.h>
 
-menuFuncPtr progSlave(const LCDMenuController *);
+#define MAJOR 2
+#define MINOR 0
 
-Menu configMenu[] = {
-  // Text5678901234, Func, subMenu
-  FUNCCALL("PrgHC-05 Slave", progSlave),
-  ENDOFMENU()
-};
+#define STRING(s)  #s
+#define TITLE(name,major,minor) name " " STRING(major) "." STRING(minor)
 
 menuFuncPtr pair(const LCDMenuController *);
+menuFuncPtr progSlave(const LCDMenuController *);
 
 Menu mainMenu[] = {
-  // Text, Func, subMenu
-  HEADLINE(STRING(CONCAT4("RoboRemote ", MAJOR, ".", MINOR))),
+  HEADLINE(TITLE("RoboRemote", MAJOR, MINOR)),
   FUNCCALL("Start", pair),
-  SUBMENU("Config", configMenu ),
+  FUNCCALL("Config HC-05", progSlave ),
   ENDOFMENU()
 };
 

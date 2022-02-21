@@ -10,64 +10,65 @@ extern LCDMenuController menu;
 extern void *remoteControl();
 
 menuFuncPtr progSlave(const LCDMenuController *) {
-  //                             0123456789012345
-  lcd.clear();         lcd.print("HC-05 as Slave");
-  lcd.setCursor(0, 1); lcd.print("Press SELECT..");
-  while (!menu.isSelectButtonPressed() && !menu.isBackButtonPressed());  // wait
-  if (menu.isBackButtonPressed()) return NULL;
-  
-  //                             0123456789012345
-  lcd.clear();         lcd.print("Insert Slave");
-  lcd.setCursor(0, 1); lcd.print("Press SELECT..");
+  //                              0123456789012345
+  lcd.clear();         lcd.print(F("Insert Slave"));
+  lcd.setCursor(0, 1); lcd.print(F("Press SELECT..."));
   while (!menu.isSelectButtonPressed() && !menu.isBackButtonPressed());  // wait
   if (menu.isBackButtonPressed()) return NULL;
 
   //                               0123456789012345
-  lcd.clear();          lcd.print("Programming");
-  lcd.setCursor(0,1);   lcd.print("HC-05 as Slave..");
+  lcd.clear();          lcd.print(F("Programming..."));
+  lcd.setCursor(0,1);   lcd.print(F("HC-05 as Slave"));
+  BTserial.begin(BTspeed);
+  digitalWrite(BT_CMD_PIN, HIGH); // set HIGH for command mode
+
   String remoteAddr;
   int rc = slaveConfig(remoteAddr);
   lcd.clear();
   if (rc < 0) {  // error
-    lcd.print("ERROR: #"); lcd.print(rc);
-    lcd.setCursor(0,1); lcd.print("Press BACK...");
+    lcd.print(F("ERROR: #")); lcd.print(rc);
+    lcd.setCursor(0,1); lcd.print(F("Press BACK..."));
     while (!menu.isBackButtonPressed());  // wait
     return NULL;
   }
   else {
-    lcd.print("Success.");
+    lcd.print(F("Success."));
     delay(2000);
   }
+  digitalWrite(BT_CMD_PIN, LOW);
 
-  //                             0123456789012345
-  lcd.clear();         lcd.print("Insert Master");
-  lcd.setCursor(0, 1); lcd.print("Press SELECT..");
+  //                              0123456789012345
+  lcd.clear();         lcd.print(F("Insert Master"));
+  lcd.setCursor(0, 1); lcd.print(F("Press SELECT..."));
   while (!menu.isSelectButtonPressed() && !menu.isBackButtonPressed());  // wait
   if (menu.isBackButtonPressed()) return NULL;
   
   //                               0123456789012345
-  lcd.clear();          lcd.print("Programming");
-  lcd.setCursor(0,1);   lcd.print("HC-05 as Master.");
+  lcd.clear();          lcd.print(F("Programming..."));
+  lcd.setCursor(0,1);   lcd.print(F("HC-05 as Master"));
+  digitalWrite(BT_CMD_PIN, HIGH); // set HIGH for command mode
+  
   rc = masterConfig(remoteAddr);
   lcd.clear();
   if (rc < 0) {  // error
-    lcd.print("ERROR: #"); lcd.print(rc);
-    lcd.setCursor(0,1); lcd.print("Press BACK...");
+    lcd.print(F("ERROR: #")); lcd.print(rc);
+    lcd.setCursor(0,1); lcd.print(F("Press BACK..."));
     while (!menu.isBackButtonPressed());  // wait
     return NULL;
   }
   else {
-    lcd.print("Success.");
+    lcd.print(F("Success."));
   }
+  digitalWrite(BT_CMD_PIN, LOW);
   
-  lcd.setCursor(0,1); lcd.print("Press BACK...");
+  lcd.setCursor(0,1); lcd.print(F("Press BACK..."));
   while (!menu.isBackButtonPressed());  // wait
   return NULL;  
 }
 
 menuFuncPtr pair(const LCDMenuController *) {
   lcd.setCursor(0, 1);
-  lcd.print(F("Pairing..."));
+  lcd.print(F("Pairing...      "));
 
   // start communication with the HC-05
   BTserial.begin(BTspeed);

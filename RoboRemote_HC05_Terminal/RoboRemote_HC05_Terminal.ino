@@ -62,7 +62,7 @@
 #include <SoftwareSerial.h>
 SoftwareSerial BTserial(2, 3); // RX | TX
 #define STATE_PIN 4
-#define CMD_PIN   5
+#define CMD_PIN   A0
 
 #define LED_PIN LED_BUILTIN
 

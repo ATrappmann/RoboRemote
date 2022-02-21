@@ -38,15 +38,6 @@
 // SOFTWARE.
 //
 
-#define MAJOR 2
-#define MINOR 0
-
-#define CONCAT2(a,b)      a##b
-#define CONCAT3(a,b,c)    a##b##c
-#define CONCAT4(a,b,c,d)  a##b##c##d
-
-#define STRING(s)  #s
-
 #include <EasyTransfer.h>
 #include <LCDMenuController.h>
 
@@ -54,8 +45,6 @@
 #include "LCD.h"
 #include "Menus.h"
 #include "Bluetooth.h"
-
-EasyTransfer ET;
 
 #define RIGHT_BTN_MASK  (1<<0)
 #define UP_BTN_MASK     (1<<1)
@@ -76,7 +65,11 @@ struct SEND_DATA {
   uint16_t  pot;
 } txData;
 
+EasyTransfer ET;
 LCDMenuController menu = LCDMenuController(&lcd, 16, 2, DOWN_BTN_PIN, UP_BTN_PIN, ENTER_BTN_PIN, RED_BTN_PIN);
+
+extern String sendCommand(const char *cmd);
+extern String getStatus(const String& response);
 
 void setup() {
   pinMode(RIGHT_BTN_PIN, INPUT_PULLUP);
@@ -102,11 +95,11 @@ void setup() {
 
   pinMode(POT_PIN, INPUT);
 
-  digitalWrite(BT_CMD_PIN, HIGH); // was HIGH during reset anyway
+  digitalWrite(BT_CMD_PIN, HIGH); 
   digitalWrite(BLUE_LED_PIN, LOW);
 
   ET.begin(details(txData), &BTserial);
-  txData.version = MAJOR;
+  txData.version = (MAJOR << 4) | MINOR;
   txData.packetNo = 0L;
 
   menu.init();
