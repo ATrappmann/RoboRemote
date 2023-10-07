@@ -5,6 +5,11 @@
 #include "LCD.h"
 #include "RoboRemote_Pins.h"
 
+/*
+ * sendCommand and wait for response of BT module
+ * For the command "AT+VERSION?" the response would be "+VERSION:2.0-<date>\nOK"
+ * @return response (without trailing LF)
+ */
 String sendCommand(const char *cmd) {
   BTserial.write(cmd); BTserial.write("\r\n");
 
@@ -32,6 +37,12 @@ String sendCommand(const char *cmd) {
   return response;
 }
 
+/*
+ * getStatus extracts the status information from the response of an
+ * BT command, eq. OK, FAIL or ERROR:(no)
+ * The status "OK" will be extracted from the response "+VERSION:2.0-<date>\nOK"
+ * @return status
+ */
 String getStatus(const String& response) {
   int idx = response.lastIndexOf('\n');
   if (-1 == idx) {  // only status in response
@@ -40,6 +51,13 @@ String getStatus(const String& response) {
   else return response.substring(idx+1);
 }
 
+/*
+ * getAnswer extracts the detailed answer information from the response
+ * of an BT command. It skips the following status information, like
+ * OK, FAIL or ERROR:(no)
+ * The answer "+VERSION:2.0-<date>" will be extracted from the response "+VERSION:2.0-<date>\nOK"
+ * @return answer
+ */
 String getAnswer(const String& response) {
   int idx = response.lastIndexOf('\n');
   if (-1 == idx) {  // only status in response

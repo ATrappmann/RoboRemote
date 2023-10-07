@@ -15,7 +15,7 @@ A Tutorial for building **RoboRemote** is shown on YouTube:
   part 2 - schematic and wiring  : https://www.youtube.com/watch?v=I3VOlUwofhE
 
   part 3 - programming and test  : https://www.youtube.com/watch?v=15aVeGGLiDI
-  
+
 ## Schematic
 Here is the schematic of **RoboRemote**. It is explained in the videos
 mentioned in the tutorial.
@@ -155,6 +155,11 @@ All text above must be included in any redistribution.
 
 ## Release Notes
 
+Version 2.0 - 05.05.2021
+
+  * Added a configuration menu for HC-05 master and slave modules
+  * Added direct binding to accellerate link of Bluetooth modules
+  
 Version 1.1 - 19.04.2020
 
   * Added Sketch "RoboRemote_HC05_Terminal" for HC05 Bluetooth module setup.
